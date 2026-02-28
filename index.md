@@ -2,122 +2,103 @@
 layout: default
 ---
 
-Text can be **bold**, _italic_, ~~strikethrough~~ or `keyword`.
+# Cloud Security Hub
 
-[Link to another page](./another-page.html).
+A practical reference for securing cloud infrastructure — covering AWS, Azure, and GCP environments.
 
-There should be whitespace between paragraphs.
+---
 
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
+## Core Topics
 
-# Header 1
+### Identity & Access Management (IAM)
 
-This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
+Misconfigured IAM is the leading cause of cloud breaches. Key principles:
 
-## Header 2
+- **Least privilege** — grant only the permissions required for the task
+- **Avoid long-lived credentials** — use roles and temporary tokens (STS, Workload Identity)
+- **Enforce MFA** — especially on root/admin accounts
+- **Audit regularly** — use IAM Access Analyzer (AWS), IAM Recommender (GCP), or Access Reviews (Azure)
 
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
-
-### Header 3
-
-```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
-}
+```bash
+# AWS: find overly permissive policies attached to a user
+aws iam list-attached-user-policies --user-name <username>
+aws iam simulate-principal-policy --policy-source-arn <arn> --action-names "*"
 ```
 
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
+---
+
+### Network Security
+
+- **Never expose management ports** (22, 3389) to `0.0.0.0/0`
+- Use **VPC/VNet segmentation** — separate tiers (web, app, data) into distinct subnets
+- Enable **VPC Flow Logs** / **NSG Flow Logs** for traffic visibility
+- Use **private endpoints** for cloud services instead of public internet routes
+- Apply **Web Application Firewalls (WAF)** in front of public-facing apps
+
+---
+
+### Data Protection
+
+| Layer | Recommendation |
+|:------|:---------------|
+| At rest | Enable default encryption on all storage (S3, GCS, Azure Blob) |
+| In transit | Enforce TLS 1.2+ everywhere; disable older protocols |
+| Key management | Use managed KMS (AWS KMS, Cloud KMS, Azure Key Vault); rotate keys annually |
+| Secrets | Never hardcode credentials — use Secrets Manager, Parameter Store, or Vault |
+
+---
+
+### Threat Detection & Monitoring
+
+Enable native cloud threat detection services:
+
+- **AWS** — GuardDuty, Security Hub, CloudTrail
+- **GCP** — Security Command Center, Cloud Audit Logs
+- **Azure** — Microsoft Defender for Cloud, Azure Monitor
+
+Set up alerts for:
+- Root/admin logins
+- IAM policy changes
+- S3/Blob public access changes
+- Unusual API call volumes or new regions
+
+---
+
+### Secure Configuration (Hardening)
+
+- Disable unused services and APIs
+- Enable **CloudTrail / Audit Logs** in all regions
+- Block public access at the account/org level for object storage
+- Use **Organization Policies** (GCP) or **Service Control Policies** (AWS) to enforce guardrails org-wide
+- Run periodic CIS Benchmark assessments
+
+```bash
+# AWS: check if S3 block public access is enabled at account level
+aws s3control get-public-access-block --account-id <account-id>
 ```
 
-#### Header 4
+---
 
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
+## Quick Reference: Common Misconfigurations
 
-##### Header 5
+| Misconfiguration | Risk | Fix |
+|:-----------------|:-----|:----|
+| Public S3 bucket | Data exposure | Enable Block Public Access |
+| Unused IAM access keys | Account takeover | Rotate or delete keys > 90 days |
+| Open security group (0.0.0.0/0) | Unauthorized access | Restrict to known CIDRs |
+| No MFA on root account | Full account compromise | Enforce MFA immediately |
+| Unencrypted EBS/disk | Data exposure | Enable encryption at rest |
+| Logging disabled | No incident visibility | Enable CloudTrail/Audit Logs |
 
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
+---
 
-###### Header 6
+## Useful Tools
 
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
+- [**Prowler**](https://github.com/prowler-cloud/prowler) — AWS/GCP/Azure security auditing CLI
+- [**ScoutSuite**](https://github.com/nccgroup/ScoutSuite) — multi-cloud security auditing
+- [**Trivy**](https://github.com/aquasecurity/trivy) — container and IaC vulnerability scanning
+- [**Checkov**](https://github.com/bridgecrewio/checkov) — static analysis for Terraform, CloudFormation, Kubernetes
 
-### There's a horizontal rule below this.
+---
 
-* * *
-
-### Here is an unordered list:
-
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
-
-### And an ordered list:
-
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
-
-### And a nested list:
-
-- level 1 item
-  - level 2 item
-  - level 2 item
-    - level 3 item
-    - level 3 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-
-### Small image
-
-![Octocat](https://github.githubassets.com/images/icons/emoji/octocat.png)
-
-### Large image
-
-![Branching](https://guides.github.com/activities/hello-world/branching.png)
-
-
-### Definition lists can be used with HTML syntax.
-
-<dl>
-<dt>Name</dt>
-<dd>Godzilla</dd>
-<dt>Born</dt>
-<dd>1952</dd>
-<dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
-</dl>
-
-```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
-```
-
-```
-The final element.
-```
+*Built for defenders. Contributions welcome.*
