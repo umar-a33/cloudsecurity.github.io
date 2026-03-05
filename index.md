@@ -8,6 +8,19 @@ A practical reference for securing cloud infrastructure — covering AWS, Azure,
 
 ---
 
+## Current Project: AI-Powered Automated Red Teaming Platform
+
+I'm currently building an **automated red teaming platform** that leverages AI to efficiently pentest cloud environments. The platform is designed to:
+
+- Autonomously enumerate cloud attack surfaces across AWS, Azure, and GCP
+- Chain misconfigurations into realistic attack paths (e.g. IAM privilege escalation, lateral movement)
+- Generate actionable reports with remediation guidance
+- Dramatically reduce the time and expertise required to run thorough cloud security assessments
+
+> Status: **In active development** — watch this space for updates.
+
+---
+
 ## Core Topics
 
 ### Identity & Access Management (IAM)
