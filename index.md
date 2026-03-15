@@ -2,6 +2,12 @@
 layout: default
 ---
 
+## Navigation
+
+* [HTB Labs](/htb-labs/) — Hack The Box machine and challenge writeups
+
+---
+
 Text can be **bold**, _italic_, ~~strikethrough~~ or `keyword`.
 
 [Link to another page](./another-page.html).
